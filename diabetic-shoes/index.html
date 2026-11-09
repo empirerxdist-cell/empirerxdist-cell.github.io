@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
 <link rel="icon" type="image/png" href="/images/logo.png">
-<link rel="stylesheet" href="/styles.css?v=11">
+<link rel="stylesheet" href="/styles.css?v=12">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -80,6 +80,27 @@
       document.getElementById("season-bar").hidden=false;break;
     }
   }
+})();
+</script>
+
+<script>
+(function(){
+  var R="https://hylan-refill-relay-production.up.railway.app";
+  function send(o){try{navigator.sendBeacon(R+"/e",new Blob([JSON.stringify(o)],{type:"application/json"}));}catch(e){}}
+  var nv=0;
+  try{if(!sessionStorage.getItem("hv")){sessionStorage.setItem("hv","1");nv=1;}}catch(e){}
+  send({t:"pv",p:location.pathname,nv:nv,r:nv?document.referrer:""});
+  document.addEventListener("click",function(e){
+    var a=e.target&&e.target.closest?e.target.closest("a"):null;
+    if(!a||!a.href)return;
+    var h=a.href,n="";
+    if(h.indexOf("tel:")===0)n="tel_click";
+    else if(h.indexOf("portal.digitalpharmacist")>-1)n="portal_click";
+    else if(h.indexOf("webconnectqs1")>-1)n="webconnect_click";
+    else if(h.indexOf("goo.gl/maps")>-1||h.indexOf("google.com/maps")>-1)
+      n=(a.closest("footer")&&a.className.indexOf("btn")>-1)?"review_click":"directions_click";
+    if(n)send({t:"ev",n:n});
+  },true);
 })();
 </script>
 <main>
